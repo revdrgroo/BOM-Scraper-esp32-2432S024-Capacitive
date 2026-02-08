@@ -210,13 +210,32 @@ void lv_show_bom_results(BomParseResult& result ) {
   }
 }
 
+void refresh_event_cb(lv_event_t* e) {
+  lv_event_code_t code = lv_event_get_code(e);
+  if (code == LV_EVENT_CLICKED) {
+    Serial.println("Refresh button clicked, refreshing data...");
+    // Here you would typically trigger a data refresh and update the UI accordingly
+  }
+}
+
 void lv_show_bom_results_table(BomParseResult& result) {
   int periodCount = result.periodCount;
   lv_obj_t* table = lv_table_create(lv_screen_active());
+  lv_obj_t* label = lv_label_create(lv_screen_active());
+  lv_obj_t* refresh = lv_btn_create(lv_screen_active());
+
+  lv_label_set_text_fmt(label, "Region: %s", result.regionName);
+  lv_obj_align(label, LV_ALIGN_TOP_LEFT, 3, 7);
+
+  lv_obj_t* buttonLabel = lv_label_create(refresh); /*Add a label to the button*/
+  lv_label_set_text(buttonLabel, "Refresh");        /*Set the labels text*/
+  lv_obj_center(buttonLabel);
+  lv_obj_align(refresh, LV_ALIGN_TOP_RIGHT, -3, 3);
+  lv_obj_add_event_cb(refresh, refresh_event_cb, LV_EVENT_ALL, (void*)nullptr); /*Assign a callback to the button*/
 
   /*Set a smaller height to the table. It'll make it scrollable*/
   // lv_obj_set_size(table, LV_SIZE_CONTENT, 200);
-  lv_obj_set_size(table, 310, 230);
+  lv_obj_set_size(table, 310, 200);
 
   lv_table_set_column_width(table, 0, 150);
   lv_table_set_row_count(table, result.periodCount);
@@ -244,5 +263,5 @@ void lv_show_bom_results_table(BomParseResult& result) {
     lv_table_set_cell_value_fmt(table, i, 5, "%s", result.periods[i].precipRange);
   }
 
-  lv_obj_align(table, LV_ALIGN_CENTER, 0, 0);
+  lv_obj_align(table, LV_ALIGN_CENTER, 0, 10);
 }
