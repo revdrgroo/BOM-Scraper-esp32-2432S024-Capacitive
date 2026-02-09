@@ -3,7 +3,7 @@
 
 #include <SPIFFS.h>
 #include "WiFi.h"
-#include "FTPClient.h"
+#include "GFTPClient.h"
 #include "TinyXML.h"
 
 

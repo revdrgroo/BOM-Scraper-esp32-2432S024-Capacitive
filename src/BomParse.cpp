@@ -13,7 +13,7 @@ void BomParse::fetchXML() {
   Serial.printf("WIFI Gateway: %s\n", WiFi.gatewayIP().toString().c_str());
 
   Serial.println("Fetching BOM XML by FTP to SPIFFS: %s");
-  FTPClient ftp_client;
+  GFTPClient ftp_client;
   bool res = ftp_client.open(FTP_SERVER_ADDRESS, FTP_SERVER_PORT, FTP_USER_NAME, FTP_USER_PASSWORD);
   Serial.printf("Connect result: %s\n", res ? "success" : "failed");
 

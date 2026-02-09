@@ -17,7 +17,6 @@
 #include "app_hal.h"
 
 #include "WiFi.h"
-#include "FTPClient.h"
 #include "TinyXML.h"
 
 static BomUI ui;

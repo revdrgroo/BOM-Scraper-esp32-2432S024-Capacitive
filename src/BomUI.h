@@ -41,11 +41,10 @@ struct BomUI {
     lv_obj_center(this->refreshLabel);
 
     // Configure the table column sizes
-    lv_table_set_column_width(this->table, 0, 150);
     lv_table_set_column_count(this->table, 6);
 
     lv_table_set_column_width(this->table, 0, 20);
-    lv_table_set_column_width(this->table, 1, 80);
+    lv_table_set_column_width(this->table, 1, 160);
     lv_table_set_column_width(this->table, 2, 30);
     lv_table_set_column_width(this->table, 3, 30);
     lv_table_set_column_width(this->table, 4, 40);
