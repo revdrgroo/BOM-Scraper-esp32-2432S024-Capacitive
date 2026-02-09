@@ -11,5 +11,6 @@ bool connect_wifi();
 lv_obj_t* lv_show_loading();
 void lv_show_bom_results(BomParseResult& result);
 void lv_show_bom_results_table(BomParseResult& result, BomUI& ui);
+void refresh_event_cb(lv_event_t* e);
 
 #endif

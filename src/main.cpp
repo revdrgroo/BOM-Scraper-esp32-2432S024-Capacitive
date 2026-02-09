@@ -115,8 +115,9 @@ void setup() {
   lv_init();
   hal_setup();
   ui.createUI();
+  lv_obj_add_event_cb(ui.refresh, refresh_event_cb, LV_EVENT_ALL, (void*)nullptr); /*Assign a callback to the button*/
   ui.show_loading_screen();
-  hal_loop();
+  lv_refr_now(lv_display_get_default());  // Process LVGL events to update the UI
 
   display_file_system_information();
   if (!connect_wifi()) {
@@ -214,6 +215,16 @@ void refresh_event_cb(lv_event_t* e) {
   if (code == LV_EVENT_CLICKED) {
     Serial.println("Refresh button clicked, refreshing data...");
     lv_table_set_row_count(ui.table, 0);
+    ui.hide_results_screen();
+    ui.show_loading_screen();
+    lv_refr_now(lv_display_get_default());  // Process LVGL events to update the UI
+    Serial.println("Is loading screen visible?");
+    fetchXMLFromBomFTP();
+    parse_ftp_results(ui.bomResults);
+    ui.hide_loading_screen();
+    ui.show_results_screen();
+    lv_show_bom_results_table(ui.bomResults, ui);
+    lv_refr_now(lv_display_get_default());  // Process LVGL events to update the UI
   }
 }
 
@@ -222,7 +233,6 @@ void lv_show_bom_results_table(BomParseResult& result, BomUI& ui) {
 
   lv_label_set_text_fmt(ui.regionLabel, "Region: %s", result.regionName);
  
-  lv_obj_add_event_cb(ui.refresh, refresh_event_cb, LV_EVENT_ALL, (void*)nullptr); /*Assign a callback to the button*/
 
   lv_obj_t* table = ui.table;
   lv_table_set_row_count(ui.table, result.periodCount);
