@@ -10,6 +10,7 @@
 struct BomParsePeriod {
   int tempMin;
   int tempMax;
+  char forecast[384];
   char precis[32];
   char precipProbability[8];
   char precipRange[16];
@@ -45,6 +46,7 @@ class BomParse {
     bool inTempMax = false;
     bool inTempMin = false;
     bool inPrecipRange = false;
+    bool inForecast = false;
     bool inPrecis = false;
     bool inPrecipProbability = false;
     int periodIndex = -1;

@@ -46,6 +46,7 @@ void BomParse::fetchXML() {
 #define TEMPERATURE_MIN_ATTR "air_temperature_minimum"
 #define TEMPERATURE_MAX_ATTR "air_temperature_maximum"
 #define PRECIS_ATTR "precis"
+#define FORECAST_ATTR "forecast"
 #define PRECIP_PROBABILITY_ATTR "probability_of_precipitation"
 
 #define COMPARE(field, value) (((field##Len == (sizeof(value) - 1)) && (strncasecmp(field, value, field##Len) == 0)))
@@ -120,6 +121,7 @@ void callback(uint8_t status, char* tagName, uint16_t tagNameLen, char* text, ui
     bp->inTempMin = false;
     bp->inTempMax = false;
     bp->inPrecis = false;
+    bp->inForecast = false;
     bp->inPrecipProbability = false;
 
     if (COMPARE(tagName, AREA_FORECAST_PERIOD_TAG)) {
@@ -153,6 +155,10 @@ void callback(uint8_t status, char* tagName, uint16_t tagNameLen, char* text, ui
       }
     }
     if (bp->inTextTag) {
+      if (COMPARE(text, FORECAST_ATTR)) {
+        // Serial.println("In forecast attr");
+        bp->inForecast = true;
+      }
       if (COMPARE(text, PRECIS_ATTR)) {
         // Serial.println("In precis attr");
         bp->inPrecis = true;
@@ -179,6 +185,10 @@ void callback(uint8_t status, char* tagName, uint16_t tagNameLen, char* text, ui
     }
   }
   if ((status == STATUS_TAG_TEXT) && COMPARE(tagName, AREA_FORECAST_TEXT_TAG)) {
+    if (bp->inForecast) {
+      Serial.printf("Forecast: %.*s\n", textLen, text);
+      strncpy(bp->result.periods[bp->periodIndex].forecast, text, sizeof(bp->result.periods[bp->periodIndex].forecast) - 1);
+    }
     if (bp->inPrecis) {
       Serial.printf("Precis: %.*s\n", textLen, text);
       strncpy(bp->result.periods[bp->periodIndex].precis, text, sizeof(bp->result.periods[bp->periodIndex].precis) - 1);}
@@ -190,7 +200,7 @@ void callback(uint8_t status, char* tagName, uint16_t tagNameLen, char* text, ui
 }
 
 void BomParse::parseXML() {
-  uint8_t dataBuffer[128];
+  uint8_t dataBuffer[384];
   size_t maxDataLen = sizeof(dataBuffer);
   TinyXML xml_parser;
 
