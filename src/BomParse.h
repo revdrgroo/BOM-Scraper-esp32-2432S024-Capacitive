@@ -1,3 +1,6 @@
+#ifndef BOMPARSE_H
+#define BOMPARSE_H
+
 #include <SPIFFS.h>
 #include "WiFi.h"
 #include "FTPClient.h"
@@ -51,3 +54,5 @@ class BomParse {
     void fetchXML();
     void parseXML();
 };
+
+#endif
