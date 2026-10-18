@@ -19,6 +19,7 @@
 #include "WiFi.h"
 
 static BomUI ui;
+static BomParseResult httpBomResult;
 
 void display_file_system_information() {
   Serial.println("File system:");
@@ -89,6 +90,13 @@ void fetchXMLFromBomFTP() {
   bom.fetchXML();
 }
 
+void fetchXMLFromBomLocal() {
+  BomParseResult result;
+  LocalBomParse bom(result);
+
+  bom.fetchXML();
+}
+
 void parse_ftp_results(BomParseResult& result) {
   BomParse bom(result);
   bom.parseXML();
@@ -99,6 +107,18 @@ void parse_ftp_results(BomParseResult& result) {
                   result.periods[i].tempMin, result.periods[i].tempMax, result.periods[i].forecast,
                   result.periods[i].precis, result.periods[i].precipProbability, result.periods[i].precipRange);
   }
+}
+
+void parse_http_results(BomParseResult& result) {
+  LocalBomParse bom(result);
+  bom.parseXML();
+  Serial.println("HTTP test result:");
+  for (int i = 0; i < result.periodCount; i++) {
+    Serial.printf("Period %d: Min=%d, Max=%d, Forecast=%s, Precis=%s, Precip Probability=%s, Precip Range=%s\n", i,
+                  result.periods[i].tempMin, result.periods[i].tempMax, result.periods[i].forecast,
+                  result.periods[i].precis, result.periods[i].precipProbability, result.periods[i].precipRange);
+  }
+  Serial.println("---\n---\n");
 }
 
 void setup() {
@@ -122,6 +142,7 @@ void setup() {
   }
   Serial.printf("Local IP: %s\n", WiFi.localIP().toString().c_str());
 
+  // parse_http_results(ui.bomResults);
   parse_ftp_results(ui.bomResults);
   ui.hide_loading_screen();
   ui.show_results_screen();
@@ -159,6 +180,10 @@ void refresh_event_cb(lv_event_t* e) {
     ui.show_loading_screen();
     lv_refr_now(lv_display_get_default());  // Process LVGL events to update the UI
     Serial.println("Is loading screen visible?");
+
+    // fetchXMLFromBomLocal();
+    // parse_http_results(ui.bomResults);
+
     fetchXMLFromBomFTP();
     parse_ftp_results(ui.bomResults);
     ui.hide_loading_screen();

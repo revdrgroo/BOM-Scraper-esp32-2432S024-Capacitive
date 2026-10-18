@@ -51,7 +51,7 @@ void BomParse::fetchXML() {
 
 #define COMPARE(field, value) (((field##Len == (sizeof(value) - 1)) && (strncasecmp(field, value, field##Len) == 0)))
 
-const char* statusPrintable(uint8_t status) {
+static const char* statusPrintable(uint8_t status) {
   switch (status) {
     case STATUS_START_TAG:
       return "START_TAG";

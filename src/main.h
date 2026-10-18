@@ -3,6 +3,7 @@
 
 #include "lvgl.h"
 #include "BomParse.h"
+#include "LocalBomParse.h"
 #include "BomUI.h"
 
 #define SPIFFS_FILE_PATH "/test.xml"

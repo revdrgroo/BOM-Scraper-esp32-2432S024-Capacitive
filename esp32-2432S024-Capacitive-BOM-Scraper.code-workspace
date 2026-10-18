@@ -1,4 +1,12 @@
 {
-	"folders": [],
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "EspTaskTest",
+			"path": "../EspTaskTest"
+		}
+	],
 	"settings": {}
 }
